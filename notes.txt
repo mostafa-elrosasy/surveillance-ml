@@ -1,0 +1,13 @@
+I was folowing the tutorial here: https://machinelearningmastery.com/how-to-develop-a-face-recognition-system-using-facenet-in-keras-and-an-svm-classifier/
+
+for the distance calculation both eucledian and cosine are working but I think cosine might be a better fit. we still need to decide on a suitable threshhold
+
+possible threshold: 50 or less on euclid and 80+ on cosine
+
+the model processes every image in around 0.2 seconds on the CPU, to have gains on the GPU we will need to collect images in batches and process them at once. I don't see a problem with using the cpu
+
+I used a venv to contain the libraries.
+
+
+
+needed libs are tensorflow, keras, PIL(not really needed), opencv
