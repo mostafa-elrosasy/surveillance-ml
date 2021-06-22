@@ -70,4 +70,4 @@ class detector:
             w = box[2]
             h = box[3]
             self.draw_bounding_box(image, class_ids[i], confidences[i], round(x), round(y), round(x+w), round(y+h))
-        return image
+        return image, len(indices) != 0
