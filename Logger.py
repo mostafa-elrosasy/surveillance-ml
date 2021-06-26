@@ -14,16 +14,18 @@ def write_image(img, name):
 
 
 def append_to_file(msg, img, conf):
-    if msg not in last_print or time.time() - last_print[msg] > THRESHHOLD:
-        t = time.time()
+    if msg not in last_print:
+        last_print[msg] = 0
+    t = time.time()
+    if t - last_print[msg] > THRESHHOLD:
         img_name = "log_img/" + str(int(t * 10)) + '.jpg'
         write_image(img, img_name)
         file = open('log.out', 'a')
         file.write('%s,%s,%s,%s\n'%(t, msg, img_name, conf))
         file.close()
         send_notification(msg)
+        print("Done: ", t - last_print[msg])
         last_print[msg] = t
-        print("Done a log")
 
 
 # consumer = KafkaConsumer('notification', auto_offset_reset='earliest')
