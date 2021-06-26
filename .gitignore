@@ -3,3 +3,7 @@ venv/
 .vscode/
 __pycache__/
 darknet/
+outputs/
+log_img/
+log.out
+*zip
