@@ -3,7 +3,7 @@ from face_embedder import euclidean
 
 
 class ColoredList:
-    THRESHOLD = 50
+    THRESHOLD = 100
     def __init__(self) -> None:
         self.faces = []
 
@@ -14,7 +14,7 @@ class ColoredList:
             return False
         dist = euclidean(closest, face)
 
-        return dist < ColoredList.THRESHOLD
+        return dist < ColoredList.THRESHOLD, dist
 
     def add_face(self, face: Face):
         self.faces.append(face)

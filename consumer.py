@@ -5,7 +5,7 @@ import numpy as np
 import base64
 from guns import detector
 import time
-from utils import str_to_mat
+from utils import mat_to_str, str_to_mat
 
 consumer = KafkaConsumer('frames', group_id='gun_detection',
                          auto_offset_reset='largest')
@@ -17,10 +17,12 @@ counter = 1
 for record in consumer:
     camera_id, time_stamp, image_str = record.value.decode().split('.')
     image = str_to_mat(image_str)
-    image, detection = detector.process(image)
+    image, detection, conf = detector.process(image)
     if detection:
-        to_send = ("%s, %s"%('GUN detected', image_str))
-        producer.send(to_send)
+        print("GUN detected")
+        image_str = mat_to_str(image)
+        test_image = str_to_mat(image_str)
+        to_send = ("%s,%s,%s"%('GUN detected', image_str.decode(), conf))
+        producer.send(to_send.encode())
         cv2.imwrite("outputs/object-detection%s.jpg" % counter, image)
-        # log here
-    counter += 1
+        counter += 1

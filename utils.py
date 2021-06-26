@@ -6,7 +6,6 @@ import cv2
 import base64
 import datetime
 import json
-from face_embedder import *
 
 
 def forgiving_json_deserializer(v):
@@ -45,6 +44,13 @@ def time(fun):
     print("--- %s seconds ---" % (time.time() - start_time))
     print("*********************************")
 
+
+
+
+# function to draw bounding box on the detected object with class name
+def draw_bounding_box(img, x, y, x_plus_w, y_plus_h, msg):
+    cv2.rectangle(img, (x,y), (x_plus_w,y_plus_h), (0, 0, 0), 2)
+    cv2.putText(img, msg, (x-10,y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
 
 
 # consumer = KafkaConsumer('frames', group_id='face_detection',

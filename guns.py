@@ -1,7 +1,8 @@
+from threading import Condition
 import cv2
 import argparse
 import numpy as np
-
+from utils import draw_bounding_box
 
 class detector:
     net = cv2.dnn.readNet("./darknet/yolov3_custom_train_last.weights",
@@ -14,10 +15,6 @@ class detector:
         output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
         return output_layers
 
-    # function to draw bounding box on the detected object with class name
-    def draw_bounding_box(self, img, class_id, confidence, x, y, x_plus_w, y_plus_h):
-        cv2.rectangle(img, (x,y), (x_plus_w,y_plus_h), (0, 0, 0), 2)
-        cv2.putText(img, "gun", (x-10,y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
 
     # read input image
 
@@ -38,7 +35,7 @@ class detector:
         class_ids = []
         confidences = []
         boxes = []
-        conf_threshold = 0.5
+        conf_threshold = 0.7
         nms_threshold = 0.4
         # for each detetion from each output layer 
         # get the confidence, class id, bounding box params
@@ -48,7 +45,7 @@ class detector:
                 scores = detection[5:]
                 class_id = np.argmax(scores)
                 confidence = scores[class_id]
-                if confidence > 0.5:
+                if confidence > conf_threshold:
                     center_x = int(detection[0] * Width)
                     center_y = int(detection[1] * Height)
                     w = int(detection[2] * Width)
@@ -69,5 +66,5 @@ class detector:
             y = box[1]
             w = box[2]
             h = box[3]
-            self.draw_bounding_box(image, class_ids[i], confidences[i], round(x), round(y), round(x+w), round(y+h))
-        return image, len(indices) != 0
+            draw_bounding_box(image, round(x), round(y), round(x+w), round(y+h), "Gun")
+        return image, len(indices) != 0, max(confidences) if confidences else 0
