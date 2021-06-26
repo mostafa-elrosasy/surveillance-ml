@@ -12,15 +12,15 @@ import json
 from kafka_producer import KafkaProducer
 
 
-def face_from_file(filename):
+def faces_from_file(filename):
     img = cv2.imread(filename)
-    return Face_Embedder.extract_face_from_mat(img)
+    return Face_Embedder.extract_faces_from_mat(img)
 
 
 blist = ColoredList()
-faces_files = ["will.jpeg", "leo1.jpg", "judi1.jpg", "foster1.jpg", "pacino1.jpg", "pacino2.jpg"]
+faces_files = ["will.jpeg", "leo1.jpg", "judi1.jpg", "foster1.jpg", "pacino1.jpg", "pacino2.jpg", "cazale1.jpg"]
 for file in faces_files:
-    face = face_from_file(file)
+    face = faces_from_file(file)[0]
     blist.add_face(face)
 
 consumer = KafkaConsumer('frames', group_id='face_detection', auto_offset_reset='largest')
@@ -34,14 +34,17 @@ for record in consumer:
     image = str_to_mat(image_str)
     cv2.imshow("Hello", image)
     cv2.waitKey(1)
-    sent_face = Face_Embedder.extract_face_from_mat(image)
-    if sent_face:
+    faces = Face_Embedder.extract_faces_from_mat(image)
+    found = False
+    for sent_face in faces:
         # use as black list
         match, dist = blist.search(sent_face)
         print('found face: ' + str(dist))
         if match:
+            found = True
             print('and matched')
             draw_bounding_box(image, *sent_face.dims, "Danger person")
-            image_str = mat_to_str(image)
-            to_send = ("%s,%s,%s"%('Danger person', image_str.decode(), dist)).encode()
-            producer.send(to_send)
+    if found:
+        image_str = mat_to_str(image)
+        to_send = ("%s,%s,%s"%('Danger person', image_str.decode(), dist)).encode()
+        producer.send(to_send)

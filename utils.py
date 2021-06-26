@@ -49,8 +49,8 @@ def time(fun):
 
 # function to draw bounding box on the detected object with class name
 def draw_bounding_box(img, x, y, x_plus_w, y_plus_h, msg):
-    cv2.rectangle(img, (x,y), (x_plus_w,y_plus_h), (0, 0, 0), 2)
-    cv2.putText(img, msg, (x-10,y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2)
+    cv2.rectangle(img, (x,y), (x_plus_w,y_plus_h), (255, 0, 0), 2)
+    cv2.putText(img, msg, (x-10,y-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
 
 # consumer = KafkaConsumer('frames', group_id='face_detection',

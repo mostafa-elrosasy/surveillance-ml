@@ -21,7 +21,7 @@ def append_to_file(msg, img, conf):
         file = open('log.out', 'a')
         file.write('%s,%s,%s,%s\n'%(t, msg, img_name, conf))
         file.close()
-        # send_notification(msg)
+        send_notification(msg)
         last_print[msg] = t
         print("Done a log")
 
