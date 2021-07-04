@@ -21,8 +21,7 @@ for record in consumer:
     if detection:
         print("GUN detected")
         image_str = mat_to_str(image)
-        test_image = str_to_mat(image_str)
         to_send = ("%s,%s,%s"%('GUN detected', image_str.decode(), conf))
         producer.send(to_send.encode())
-        cv2.imwrite("outputs/object-detection%s.jpg" % counter, image)
+        # cv2.imwrite("outputs/object-detection%s.jpg" % counter, image)
         counter += 1

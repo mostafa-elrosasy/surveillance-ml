@@ -29,7 +29,9 @@ consumer = KafkaConsumer('frames', group_id='face_detection', auto_offset_reset=
 producer = KafkaProducer()
 thief_luck = 0
 for record in consumer:
-    thief_luck = (thief_luck + 1) % 5
+    thief_luck = (thief_luck + 1) % 3
+    if thief_luck != 0:
+        continue
     camera_id, time_stamp, image_str = record.value.decode().split('.')
     image = str_to_mat(image_str)
     cv2.imshow("Hello", image)
