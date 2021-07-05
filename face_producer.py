@@ -10,14 +10,17 @@ import msgpack
 from utils import *
 import json
 from kafka_producer import KafkaProducer
+from timer import Timer
 
 
 def faces_from_file(filename):
     img = cv2.imread(filename)
     return Face_Embedder.extract_faces_from_mat(img)
 
+timer = Timer()
 
 blist = ColoredList()
+
 faces_files = ["will.jpeg", "leo1.jpg", "judi1.jpg", "foster1.jpg", "pacino1.jpg", "pacino2.jpg", "cazale1.jpg"]
 for file in faces_files:
     face = faces_from_file(file)[0]
@@ -31,6 +34,8 @@ thief_luck = 0
 for record in consumer:
     thief_luck = (thief_luck + 1) % 3
     if thief_luck != 0:
+        continue
+    if not timer.its_time():
         continue
     camera_id, time_stamp, image_str = record.value.decode().split('.')
     image = str_to_mat(image_str)
@@ -47,6 +52,7 @@ for record in consumer:
             print('and matched')
             draw_bounding_box(image, *sent_face.dims, "Danger person")
     if found:
+        timer.mark_time()
         image_str = mat_to_str(image)
         to_send = ("%s,%s,%s"%('Danger person', image_str.decode(), dist)).encode()
         producer.send(to_send)
