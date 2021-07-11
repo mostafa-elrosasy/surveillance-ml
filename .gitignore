@@ -7,3 +7,4 @@ outputs/
 log_img/
 log.out
 *zip
+facenet_keras.h5
