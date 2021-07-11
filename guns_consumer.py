@@ -7,6 +7,11 @@ from guns import detector
 from timer import Timer
 from utils import mat_to_str, str_to_mat
 
+def update_gun_count(cnt):
+    file = open('guns_count.out', 'w')
+    file.write('%s\n'%(str(cnt)))
+    file.close()
+
 consumer = KafkaConsumer('frames', group_id='gun_detection',
                          auto_offset_reset='largest')
 
@@ -15,7 +20,7 @@ producer = KafkaProducer()
 timer = Timer()
 
 detector = detector()
-counter = 1
+counter = 0
 for record in consumer:
     if not timer.its_time():
         continue
@@ -30,3 +35,4 @@ for record in consumer:
         producer.send(to_send.encode())
         # cv2.imwrite("outputs/object-detection%s.jpg" % counter, image)
         counter += 1
+        update_gun_count(counter)

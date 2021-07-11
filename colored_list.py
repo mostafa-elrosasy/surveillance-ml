@@ -8,13 +8,16 @@ class ColoredList:
         self.faces = []
 
     def search(self, face: Face):
+        if len(self.faces) == 0:
+            return False, 0, 0
+
         closest = min(self.faces, key=lambda other:euclidean(face, other))
 
         if closest is None:
-            return False
+            return False, 0, 0
         dist = euclidean(closest, face)
 
-        return dist < ColoredList.THRESHOLD, dist
+        return dist < ColoredList.THRESHOLD, dist, closest.id
 
     def add_face(self, face: Face):
         self.faces.append(face)
